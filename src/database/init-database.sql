@@ -21,6 +21,12 @@ CREATE TABLE vehicles (
     brandid INTEGER REFERENCES brands(id)
 );
 
+CREATE TABLE vehiclesPhotos (
+    id SERIAL PRIMARY KEY,
+    vehicleid INTEGER NOT NULL REFERENCES vehicles(id),
+    uri VARCHAR(255) NOT NULL
+)
+
 INSERT INTO gastypes (name) VALUES ('Gasoline');
 INSERT INTO gastypes (name) VALUES ('Diesel');
 INSERT INTO gastypes (name) VALUES ('Electric');
