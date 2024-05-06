@@ -3,9 +3,11 @@ const path = require('path');
 
 // Set storage engine
 const storage = multer.diskStorage({
-  destination: './src/static/profile',
+  destination: './src/static/vehicles',
   filename: function(req, file, cb) {
-    cb(null, file.originalname);
+    
+    const filename = randomUUID() + '_'+Date.now()
+    cb(null, filename+path.extname(file.originalname))
   }
 });
 
@@ -14,17 +16,14 @@ const storage = multer.diskStorage({
 // Check file type
 function checkFileType(file, cb) {
   // Allowed ext
-  const filetypes = /jpeg|jpg|png|/;
-  // Check ext
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  // Check mime
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (mimetype && extname) {
-    return cb(null, true);
-  } else {
-    cb('Error: Images only!');
-  }
+  if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
+    cb(null, true);
+} else {
+    cb(null, false);
+    const err = new Error('Only .png, .jpg and .jpeg format allowed!');
+    err.code = 'LIMIT_FILE_TYPES';
+    return cb(err);
+}
 }
 const upload = multer({
     storage: storage,
@@ -32,7 +31,7 @@ const upload = multer({
     fileFilter: function(req, file, cb) {
       checkFileType(file, cb);
     }
-  }).single('myImage');
+  }).array('file', 10);
 
   
 module.exports = upload
