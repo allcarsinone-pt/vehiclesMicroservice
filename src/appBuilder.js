@@ -15,11 +15,13 @@ const StandMockAdapter = require('./adapters/StandMockAdapter');
 const GetVehicleDetailsController = require('./controllers/GetVehicleDetailsController');
 const FilterVehiclesController = require('./controllers/FilterVehiclesController');
 const RabbitMockAdapter = require('./adapters/RabbitMockAdapter');
-
+const multerMiddleware = require('../config/multer-config');
+const path = require('path')
 function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapter = new LogMockAdapter(), 
                 authService = new MockAuthServiceAdapter(), standService = new StandMockAdapter, rabbitMQAdapter = new RabbitMockAdapter()) {
     const app = express();
     app.use(express.json());
+    
     app.set('RegisterBrandController', new RegisterBrandController(brandRepository, logAdapter));
     app.set('EditBrandController', new EditBrandController(brandRepository, logAdapter));
     app.set('DeleteBrandController', new DeleteBrandController(brandRepository, logAdapter));
@@ -32,10 +34,13 @@ function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapt
     app.set('GetVehicleDetailsController', new GetVehicleDetailsController(vehicleRepository, logAdapter));
     app.set('FilterVehiclesController', new FilterVehiclesController(vehicleRepository, logAdapter));
     app.set('RabbitMQAdapter', rabbitMQAdapter)
+    app.set('multerMiddleware', multerMiddleware)
     app.set('LogAdapter', logAdapter) // Log adapter: ex: rabbitmq
     app.set('AuthAdapter', authService)
     app.set('StandService', standService)
     app.use('/vehicles', router);
+    console.log(path.join(__dirname, './static/'))
+    app.use('/',express.static(path.join(__dirname, './static/')));
     return app;
 }
 

@@ -14,32 +14,37 @@ class RegisterVehicleController {
 
         let multerMiddleware = request.app.get('multerMiddleware')
 
-        let { standid, brandid, gastypeid, model, year, mileage, price, availability, description } = request.body
-
-        if(!standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !availability || !description) {
-            await this.logService.execute('VehiclesService','Missing fields','error')
-            return response.status(400).json({ error: 'All fields are required. It should have standid, brandid, gastypeid, model, year, mileage, price, availability, description' })
-        }
+        const vehicleRepository = this.vehicleRepository
+        const logService = this.logService
 
         multerMiddleware(request, response, async function(err) {
             if(err) {
-                await this.logService.execute('VehiclesService', err, 'error')
+                //await this.logService.execute('VehiclesService', err, 'error')
                 return response.status(400).json({ error: err })
             }
 
-            const usecase = new RegisterVehicleUseCase(this.vehicleRepository)
-            const vehicle = await usecase.execute({standid, brandid, gastypeid, model, year, mileage, price, availability, description})
+            console.log(request.body)
+            let { standid, brandid, gastypeid, model, year, mileage, price, availability, description } = request.body
+
+            if(!standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !availability || !description) {
+                //await this.logService.execute('VehiclesService','Missing fields','error')
+                return response.status(400).json({ error: 'All fields are required. It should have standid, brandid, gastypeid, model, year, mileage, price, availability, description' })
+            }
+
+            const usecase = new RegisterVehicleUseCase(vehicleRepository)
+            
+            const photos = request.files.map((file) => `/photos/${file.filename}`)
+            console.log(photos)
+            const vehicle = await usecase.execute({standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos})
 
             if(vehicle.error) {
-                await this.logService.execute('VehiclesService', vehicle.error.message, 'error')
+                //await this.logService.execute('VehiclesService', vehicle.error.message, 'error')
                 return response.status(400).json({ error: vehicle.error.message })
             }
 
-            await this.logService.execute('VehiclesService', `Vehicle ${vehicle.data.model} created`, 'success')
+            //await this.logService.execute('VehiclesService', `Vehicle ${vehicle.data.model} created`, 'success')
             return response.status(201).json(vehicle.data)
         })
-
-        
     }
 }
 

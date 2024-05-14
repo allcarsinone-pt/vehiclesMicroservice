@@ -1,9 +1,9 @@
 const multer = require('multer');
 const path = require('path');
-
+const { randomUUID } = require('crypto');
 // Set storage engine
 const storage = multer.diskStorage({
-  destination: './src/static/vehicles',
+  destination: './src/static/photos',
   filename: function(req, file, cb) {
     
     const filename = randomUUID() + '_'+Date.now()
@@ -25,7 +25,7 @@ function checkFileType(file, cb) {
     return cb(err);
 }
 }
-const upload = multer({
+const multerMiddleware = multer({
     storage: storage,
     limits: {fileSize: 1000000}, // limit file size if needed
     fileFilter: function(req, file, cb) {
@@ -34,4 +34,4 @@ const upload = multer({
   }).array('file', 10);
 
   
-module.exports = upload
+module.exports = multerMiddleware

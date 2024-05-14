@@ -2,10 +2,23 @@ const AuthServiceMiddleware = require('../middlewares/AuthServiceMiddleware')
 const roles = require('../entities/Roles')
 const router = require('express').Router()
 
-router.post('/', AuthServiceMiddleware.execute([roles.ADMIN, roles.MANAGER]), async (req, res) => {
+
+
+
+
+/**router.post('/', AuthServiceMiddleware.execute([roles.ADMIN, roles.MANAGER]), async (req, res) => {
+    const controller = req.app.get('RegisterVehicleController')
+    controller.execute(req, res)
+})**/
+
+
+router.post('/', async (req, res) => {
     const controller = req.app.get('RegisterVehicleController')
     controller.execute(req, res)
 })
+
+
+
 
 router.get('/:vehicleId', async (req, res) => {
     const controller = req.app.get('GetVehicleDetailsController')

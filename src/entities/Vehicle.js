@@ -1,6 +1,6 @@
 class Vehicle {
 
-    constructor({standid, brandid, gastypeid, model, year, mileage, price, availability, description, brandname, gastypename, id}) {
+    constructor({standid, brandid, gastypeid, model, year, mileage, price, availability, description, brandname, gastypename, id, photos}) {
         this.standid = standid;
         this.brandid = brandid;
         this.gastypeid = gastypeid;
@@ -13,6 +13,7 @@ class Vehicle {
         this.brandname = brandname;
         this.gastypename = gastypename;
         this.id = id;
+        this.photos = photos || []
     }
 
     toJson() {

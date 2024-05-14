@@ -11,9 +11,24 @@ class PostgreVehicleRepository {
     await client.connect()
     const result = await client.query(`INSERT INTO vehicles (standid, brandid, gastypeid, model, year, mileage, price, availability, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
     [vehicle.standid, vehicle.brandid, vehicle.gastypeid, vehicle.model, vehicle.year, vehicle.mileage, vehicle.price, vehicle.availability, vehicle.description])
+    let n = 0
+    if(vehicle.photos.length > 0) {
+      const photos = vehicle.photos
+     
+      for(let i = 0; i < photos.length; i++) {
+        await client.query(`INSERT INTO photos (vehicleid, url) VALUES ($1, $2) RETURNING *`, [result.rows[0].id, photos[i]])
+        n++
+      }
+      
+
+    }
+
+    if(vehicle.photos.length !== n) {
+      console.warn("Error inserting photos")
+    }
     await client.end()
 
-    return new Vehicle(result.rows[0])
+    return new Vehicle({ ...vehicle, id: result.rows[0].id, photos: vehicle.photos || [] }) //new Vehicle(result.rows[0])
   }
 
   async deleteVehicle (id) {
