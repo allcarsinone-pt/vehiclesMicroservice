@@ -25,7 +25,7 @@ router.get('/:vehicleId', async (req, res) => {
     controller.execute(req, res)
 })
 
-router.get('/filter', AuthServiceMiddleware.execute([roles.ADMIN, roles.MANAGER, roles.CLIENT]), async (req, res) => {
+router.get('/', async (req, res) => {
     const controller = req.app.get('FilterVehiclesController')
     controller.execute(req, res)
 })

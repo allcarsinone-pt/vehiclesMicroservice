@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const router = require('./routes/VehicleRouter')
 const RegisterBrandController = require('./controllers/RegisterBrandController')
 const EditBrandController = require('./controllers/EditBrandController')
@@ -17,11 +18,11 @@ const FilterVehiclesController = require('./controllers/FilterVehiclesController
 const RabbitMockAdapter = require('./adapters/RabbitMockAdapter');
 const multerMiddleware = require('../config/multer-config');
 const path = require('path')
-function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapter = new LogMockAdapter(), 
-                authService = new MockAuthServiceAdapter(), standService = new StandMockAdapter, rabbitMQAdapter = new RabbitMockAdapter()) {
+function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapter = new LogMockAdapter(),
+    authService = new MockAuthServiceAdapter(), standService = new StandMockAdapter, rabbitMQAdapter = new RabbitMockAdapter()) {
     const app = express();
+    app.use(cors());
     app.use(express.json());
-    
     app.set('RegisterBrandController', new RegisterBrandController(brandRepository, logAdapter));
     app.set('EditBrandController', new EditBrandController(brandRepository, logAdapter));
     app.set('DeleteBrandController', new DeleteBrandController(brandRepository, logAdapter));
@@ -40,7 +41,7 @@ function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapt
     app.set('StandService', standService)
     app.use('/vehicles', router);
     console.log(path.join(__dirname, './static/'))
-    app.use('/',express.static(path.join(__dirname, './static/')));
+    app.use('/', express.static(path.join(__dirname, './static/')));
     return app;
 }
 
