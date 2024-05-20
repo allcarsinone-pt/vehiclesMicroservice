@@ -26,7 +26,10 @@ class RegisterVehicleController {
             console.log(request.body)
             let { standid, brandid, gastypeid, model, year, mileage, price, availability, description } = request.body
 
-            if(!standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !availability || !description) {
+            if(!availability) {
+                availability = 1
+            }
+            if(!standid || !brandid || !gastypeid || !model || !year || !mileage || !price  || !description) {
                 //await this.logService.execute('VehiclesService','Missing fields','error')
                 return response.status(400).json({ error: 'All fields are required. It should have standid, brandid, gastypeid, model, year, mileage, price, availability, description' })
             }
