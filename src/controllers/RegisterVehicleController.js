@@ -17,8 +17,8 @@ class RegisterVehicleController {
         const vehicleRepository = this.vehicleRepository
         const logService = this.logService
 
-        multerMiddleware(request, response, async function(err) {
-            if(err) {
+        multerMiddleware(request, response, async function (err) {
+            if (err) {
                 //await this.logService.execute('VehiclesService', err, 'error')
                 return response.status(400).json({ error: err })
             }
@@ -26,21 +26,25 @@ class RegisterVehicleController {
             console.log(request.body)
             let { standid, brandid, gastypeid, model, year, mileage, price, availability, description } = request.body
 
-            if(!availability) {
+            if (!availability) {
                 availability = 1
             }
-            if(!standid || !brandid || !gastypeid || !model || !year || !mileage || !price  || !description) {
+            if (!standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !description) {
                 //await this.logService.execute('VehiclesService','Missing fields','error')
                 return response.status(400).json({ error: 'All fields are required. It should have standid, brandid, gastypeid, model, year, mileage, price, availability, description' })
             }
 
             const usecase = new RegisterVehicleUseCase(vehicleRepository)
-            
-            const photos = request.files.map((file) => `/photos/${file.filename}`)
-            console.log(photos)
-            const vehicle = await usecase.execute({standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos})
 
-            if(vehicle.error) {
+            let photos = []
+
+            if (request.files) {
+                let photos = request.files.map((file) => `/photos/${file.filename}`)
+            }
+
+            const vehicle = await usecase.execute({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos })
+
+            if (vehicle.error) {
                 //await this.logService.execute('VehiclesService', vehicle.error.message, 'error')
                 return response.status(400).json({ error: vehicle.error.message })
             }
