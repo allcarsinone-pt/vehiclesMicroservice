@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const router = require('./routes/VehicleRouter')
+const vehicleRouter = require('./routes/VehicleRouter')
+const brandRouter = require('./routes/BrandRouter')
+const gasTypeRouter = require('./routes/GasTypeRouter')
+const GetBrandsController = require('./controllers/GetBrandsController')
 const RegisterBrandController = require('./controllers/RegisterBrandController')
 const EditBrandController = require('./controllers/EditBrandController')
 const DeleteBrandController = require('./controllers/DeleteBrandController')
@@ -16,6 +19,7 @@ const StandMockAdapter = require('./adapters/StandMockAdapter');
 const GetVehicleDetailsController = require('./controllers/GetVehicleDetailsController');
 const FilterVehiclesController = require('./controllers/FilterVehiclesController');
 const RabbitMockAdapter = require('./adapters/RabbitMockAdapter');
+const GetGasTypesController = require('./controllers/GetGasTypesController');
 const multerMiddleware = require('../config/multer-config');
 const path = require('path')
 function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapter = new LogMockAdapter(),
@@ -23,6 +27,8 @@ function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapt
     const app = express();
     app.use(cors());
     app.use(express.json());
+    app.set('GetGasTypesController', new GetGasTypesController(gasTypeRepository, logAdapter));
+    app.set('GetBrandsController', new GetBrandsController(brandRepository, logAdapter));
     app.set('RegisterBrandController', new RegisterBrandController(brandRepository, logAdapter));
     app.set('EditBrandController', new EditBrandController(brandRepository, logAdapter));
     app.set('DeleteBrandController', new DeleteBrandController(brandRepository, logAdapter));
@@ -39,7 +45,9 @@ function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapt
     app.set('LogAdapter', logAdapter) // Log adapter: ex: rabbitmq
     app.set('AuthAdapter', authService)
     app.set('StandService', standService)
-    app.use('/vehicles', router);
+    app.use('/vehicles', vehicleRouter);
+    app.use('/brands', brandRouter);
+    app.use('/gastypes', gasTypeRouter);
     console.log(path.join(__dirname, './static/'))
     app.use('/', express.static(path.join(__dirname, './static/')));
     return app;

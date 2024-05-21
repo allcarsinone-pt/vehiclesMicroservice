@@ -23,7 +23,7 @@ CREATE TABLE vehicles (
 
 CREATE TABLE photos (
     id SERIAL PRIMARY KEY,
-    vehicleid INTEGER NOT NULL REFERENCES vehicles(id),
+    vehicleid INTEGER REFERENCES vehicles(id),
     url VARCHAR(255) NOT NULL
 );
 
