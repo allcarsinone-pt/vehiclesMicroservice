@@ -6,7 +6,7 @@ class FilterVehiclesUseCase {
      * @description Constructor of FilterVehiclesUseCase
      * @param {*} vehicleRepository a vehicleRepository
      */
-    constructor (vehicleRepository) {
+    constructor(vehicleRepository) {
         this.vehicleRepository = vehicleRepository
     }
 
@@ -14,14 +14,14 @@ class FilterVehiclesUseCase {
         const withErrorHandling = handleError(async () => {
             const vehicles = await this.vehicleRepository.getVehiclesFilter(brandname, model, year, mileage, price, availability, description, gastypename);
 
-        if (!vehicles) {
-            return Result.failed(new Error('No vehicles found'));
-        }
+            if (!vehicles) {
+                return Result.success([]);
+            }
 
-        return Result.success(vehicles);
-    });
+            return Result.success(vehicles);
+        });
 
-    return withErrorHandling();
+        return withErrorHandling();
     }
 }
 
