@@ -18,15 +18,18 @@ const MockAuthServiceAdapter = require('./adapters/MockAuthServiceAdapter');
 const StandMockAdapter = require('./adapters/StandMockAdapter');
 const GetVehicleDetailsController = require('./controllers/GetVehicleDetailsController');
 const FilterVehiclesController = require('./controllers/FilterVehiclesController');
+const ScheduleTestDriveController = require('./controllers/ScheduleTestDriveController');
+const TestDrivesRouter = require('./routes/TestDrivesRouter');
 const RabbitMockAdapter = require('./adapters/RabbitMockAdapter');
 const GetGasTypesController = require('./controllers/GetGasTypesController');
 const multerMiddleware = require('../config/multer-config');
 const path = require('path')
-function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapter = new LogMockAdapter(),
-    authService = new MockAuthServiceAdapter(), standService = new StandMockAdapter, rabbitMQAdapter = new RabbitMockAdapter()) {
+function makeApp(vehicleRepository, gasTypeRepository, brandRepository ,logAdapter = new LogMockAdapter(),
+    authService = new MockAuthServiceAdapter(), standService = new StandMockAdapter, rabbitMQAdapter = new RabbitMockAdapter(), testDriveRepository) {
     const app = express();
     app.use(cors());
     app.use(express.json());
+    app.set('ScheduleTestDriveController', new ScheduleTestDriveController(testDriveRepository));
     app.set('GetGasTypesController', new GetGasTypesController(gasTypeRepository, logAdapter));
     app.set('GetBrandsController', new GetBrandsController(brandRepository, logAdapter));
     app.set('RegisterBrandController', new RegisterBrandController(brandRepository, logAdapter));
@@ -44,8 +47,9 @@ function makeApp(vehicleRepository, gasTypeRepository, brandRepository, logAdapt
     app.set('multerMiddleware', multerMiddleware)
     app.set('LogAdapter', logAdapter) // Log adapter: ex: rabbitmq
     app.set('AuthAdapter', authService)
-    app.set('StandService', standService)
-    app.use('/vehicles', vehicleRouter);
+    app.set('StandService', standService)    
+    app.use('/vehicles',vehicleRouter);
+    app.use('/testdrives', TestDrivesRouter);
     app.use('/brands', brandRouter);
     app.use('/gastypes', gasTypeRouter);
     console.log(path.join(__dirname, './static/'))

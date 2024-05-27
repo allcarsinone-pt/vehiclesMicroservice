@@ -27,6 +27,13 @@ CREATE TABLE photos (
     url VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE testdrives (
+    id SERIAL PRIMARY KEY,
+    vehicleid INTEGER NOT NULL REFERENCES vehicles(id),
+    date DATE NOT NULL,
+    username VARCHAR(100) NOT NULL    
+);
+
 INSERT INTO gastypes (name) VALUES ('Gasoline');
 INSERT INTO gastypes (name) VALUES ('Diesel');
 INSERT INTO gastypes (name) VALUES ('Electric');

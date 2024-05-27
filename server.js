@@ -12,6 +12,7 @@ const DeleteAllVehiclesByStandUseCase = require('./src/usecases/DeleteAllVehicle
 const ElasticLogService = require('./src/controllers/services/ElasticLogService')
 const RabbitMockAdapter = require('./src/adapters/RabbitMockAdapter')
 const MockAuthServiceAdapter = require('./src/adapters/MockAuthServiceAdapter')
+const PostgreTestDriveRepository = require('./src/repositories/PostgresTestDriveRepository')
 
 dotenv.config()
 
@@ -25,7 +26,8 @@ const app = makeApp(vehicleRepository,
                     new LogMockAdapter(),
                     new MockAuthServiceAdapter(),
                     new StandMockAdapter(),
-                    new RabbitMockAdapter())
+                    new RabbitMockAdapter(),
+                new PostgreTestDriveRepository(process.env.DATABASE_URL))
 
 app.listen(process.env.PORT || 3003, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT || 3003}/`)
