@@ -39,7 +39,7 @@ class RegisterVehicleController {
             let photos = []
 
             if (request.files) {
-                let photos = request.files.map((file) => `/photos/${file.filename}`)
+                photos = request.files.map((file) => `/photos/${file.filename}`)
             }
 
             const vehicle = await usecase.execute({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos })
