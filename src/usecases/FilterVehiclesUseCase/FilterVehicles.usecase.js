@@ -12,7 +12,7 @@ class FilterVehiclesUseCase {
 
     async execute(brandname, model, year, mileage, price, availability, description, gastypename) {
         const withErrorHandling = handleError(async () => {
-            const vehicles = await this.vehicleRepository.getVehiclesFilter(brandname, model, year, mileage, price, availability, description, gastypename);
+            const vehicles = await this.vehicleRepository.getVehicles();
 
             if (!vehicles) {
                 return Result.success([]);

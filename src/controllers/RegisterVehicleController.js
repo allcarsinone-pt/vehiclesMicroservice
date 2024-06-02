@@ -23,8 +23,7 @@ class RegisterVehicleController {
                 return response.status(400).json({ error: err })
             }
 
-            console.log(request.body)
-            let { standid, brandid, gastypeid, model, year, mileage, price, availability, description } = request.body
+            let { standid, brandid, gastypeid, model, year, mileage, price, availability, description } = JSON.parse(request.body.vehicle)
 
             if (!availability) {
                 availability = 1
@@ -38,11 +37,14 @@ class RegisterVehicleController {
 
             let photos = []
 
+
             if (request.files) {
-                photos = request.files.map((file) => `/photos/${file.filename}`)
+                photos = request.files.map((file) => `src/static/photos/${file.filename}`)
             }
 
+            console.log({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos })
             const vehicle = await usecase.execute({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos })
+
 
             if (vehicle.error) {
                 //await this.logService.execute('VehiclesService', vehicle.error.message, 'error')

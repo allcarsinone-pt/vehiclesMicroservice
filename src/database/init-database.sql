@@ -17,8 +17,9 @@ CREATE TABLE vehicles (
     price FLOAT,
     availability BOOLEAN,
     description VARCHAR(250),
-    gastypeid INTEGER REFERENCES gastypes(id),
-    brandid INTEGER REFERENCES brands(id)
+    gastypeid INTEGER,
+    brandid INTEGER,
+    deleted BOOLEAN DEFAULT false
 );
 
 CREATE TABLE photos (

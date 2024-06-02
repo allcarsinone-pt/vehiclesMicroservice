@@ -34,7 +34,7 @@ class PostgreVehicleRepository {
   async deleteVehicle(id) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    await client.query(`DELETE FROM vehicles WHERE id = $1`, [id])
+    await client.query(`UPDATE vehicles SET deleted = true WHERE id = $1`, [id])
     await client.end()
     return ''
   }
@@ -119,26 +119,25 @@ class PostgreVehicleRepository {
   async getVehicles() {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    const result = await client.query(`SELECT * FROM vehicles INNER JOIN brands ON vehicles.brandid = brands.id INNER JOIN gastypes ON vehicles.gastypeid = gastypes.id`)
+    const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, br.name as brandname, gp.name as gastypename FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid
+    WHERE availability = true AND deleted = false`)
     await client.end()
 
     if (result.rows.length === 0) {
       return undefined
     }
 
-    const map = this.mapRows(result.rows)
-
-    return map
+    return result.rows
 
   }
 
   async getVehicleDetails(vehicleid) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    const result = await client.query(`SELECT vc.*, brands.name as "brandname", gp.name as "gastypename" FROM vehicles vc INNER JOIN brands ON vc.brandid = brands.id INNER JOIN gastypes gp ON gp.id = vc.gastypeid WHERE vc.id = $1`, [vehicleid])
+    const result = await client.query(`SELECT vc.*, brands.name as "brandname", gp.name as "gastypename" FROM vehicles vc INNER JOIN brands ON vc.brandid = brands.id INNER JOIN gastypes gp ON gp.id = vc.gastypeid WHERE vc.id = $1 AND vc.deleted = false AND vc.availability = true`, [vehicleid])
 
     if (result.rows.length === 0) {
-      return undefined
+      throw new Error('Vehicle not found')
     }
 
     const photos = await client.query(`SELECT url FROM photos WHERE vehicleid = $1`, [vehicleid])
@@ -148,7 +147,7 @@ class PostgreVehicleRepository {
 
   }
 
-  async getVehiclesFilter(vehicle) {
+  async getVehiclesFilter2(vehicle) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
     const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, br.name as brandname, gp.name as gastypename FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid`)

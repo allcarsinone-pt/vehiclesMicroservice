@@ -6,16 +6,21 @@ class GetVehicleDetailsUseCase {
      * @description Constructor of GetVehicleDetailsUseCase
      * @param {*} vehicleRepository a vehicleRepository
      */
-    constructor (vehicleRepository) {
+    constructor(vehicleRepository) {
         this.vehicleRepository = vehicleRepository
     }
 
     async execute(vehicleid) {
         const withErrorHandling = handleError(async () => {
-            if(!vehicleid) {
+            if (!vehicleid) {
                 return Result.failed(new Error('Missing fields'))
             }
             const vehicle = await this.vehicleRepository.getVehicleDetails(vehicleid)
+
+            if (!vehicle) {
+                return Result.failed(new Error('Vehicle doesnt exists'))
+            }
+
             return Result.success(vehicle.toJson())
         })
         return withErrorHandling()
