@@ -58,7 +58,11 @@ class PostgreVehicleRepository {
   async findByID(id) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    const result = await client.query(`SELECT * FROM vehicles WHERE id = $1`, [id])
+    const result = await client.query(`SELECT * FROM vehicles 
+                                      INNER JOIN brands ON vehicles.brandid = brands.id
+                                      INNER JOIN gastypes ON vehicles.gastypeid = gastypes.id
+                                      INNER JOIN photos ON vehicles.id = photos.vehicleid
+                                      WHERE id = $1`, [id])
     await client.end()
     if (result.rows.length === 0) {
       return undefined
