@@ -13,6 +13,7 @@ const ElasticLogService = require('./src/controllers/services/ElasticLogService'
 const RabbitMockAdapter = require('./src/adapters/RabbitMockAdapter')
 const MockAuthServiceAdapter = require('./src/adapters/MockAuthServiceAdapter')
 const PostgreTestDriveRepository = require('./src/repositories/PostgresTestDriveRepository')
+const DGEGGateway = require('./src/adapters/DGEGGateway')
 
 dotenv.config()
 
@@ -20,21 +21,31 @@ dotenv.config()
  * Define DATABASE_URL and GATEWAY URI in .env file and kubernetes deployment
  */
 const vehicleRepository = new PostgreVehicleRepository(process.env.DATABASE_URL)
-const app = makeApp(vehicleRepository,
-                    new PostgreGasTypeRepository(process.env.DATABASE_URL), 
-                    new PostgreBrandRepository(process.env.DATABASE_URL),
-                    new LogMockAdapter(),
-                    new MockAuthServiceAdapter(),
-                    new StandMockAdapter(),
-                    new RabbitMockAdapter(),
-                new PostgreTestDriveRepository(process.env.DATABASE_URL))
+const gasTypeRepository = new PostgreGasTypeRepository(process.env.DATABASE_URL)
+const brandRepository = new PostgreBrandRepository(process.env.DATABASE_URL)
+const logAdapter = new LogMockAdapter()
+const authService = new MockAuthServiceAdapter()
+const standService= new StandMockAdapter()
+const rabbitMQAdapter = new RabbitMockAdapter()
+const testDriveRepository = new PostgreTestDriveRepository(process.env.DATABASE_URL)
+const fuelService = new DGEGGateway("https://precoscombustiveis.dgeg.gov.pt")
+const app = makeApp({
+    vehicleRepository,
+    gasTypeRepository,
+    brandRepository,
+    logAdapter,
+    authService,
+    standService,
+    rabbitMQAdapter,
+    testDriveRepository,
+    fuelService
+})
 
 app.listen(process.env.PORT || 3003, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT || 3003}/`)
 })
 
-app.get("RabbitMQAdapter")
-const rabbitMQAdapter = app.get("RabbitMQAdapter")
+
 
 rabbitMQAdapter.listenToMessages(async (message) => {
     const usecase = new UpdateAvailabilityUseCase(vehicleRepository)

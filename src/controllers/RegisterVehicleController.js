@@ -23,14 +23,14 @@ class RegisterVehicleController {
                 return response.status(400).json({ error: err })
             }
 
-            let { standid, brandid, gastypeid, model, year, mileage, price, availability, description } = JSON.parse(request.body.vehicle)
+            let { standid, brandid, gastypeid, model, year, mileage, price, availability, description, consume } = JSON.parse(request.body.vehicle)
 
             if (!availability) {
                 availability = 1
             }
-            if (!standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !description) {
+            if (!standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !description || !consume) {
                 //await this.logService.execute('VehiclesService','Missing fields','error')
-                return response.status(400).json({ error: 'All fields are required. It should have standid, brandid, gastypeid, model, year, mileage, price, availability, description' })
+                return response.status(400).json({ error: 'All fields are required. It should have standid, brandid, gastypeid, model, year, mileage, price, availability, description, consume' })
             }
 
             const usecase = new RegisterVehicleUseCase(vehicleRepository)
@@ -43,7 +43,7 @@ class RegisterVehicleController {
             }
 
             console.log({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos })
-            const vehicle = await usecase.execute({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos })
+            const vehicle = await usecase.execute({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, photos, consume })
 
 
             if (vehicle.error) {

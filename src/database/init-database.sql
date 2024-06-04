@@ -16,6 +16,7 @@ CREATE TABLE vehicles (
     mileage FLOAT,
     price FLOAT,
     availability BOOLEAN,
+    consume FLOAT,
     description VARCHAR(250),
     gastypeid INTEGER,
     brandid INTEGER,

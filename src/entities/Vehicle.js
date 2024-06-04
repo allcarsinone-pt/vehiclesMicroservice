@@ -1,6 +1,6 @@
 class Vehicle {
 
-    constructor({standid, brandid, gastypeid, model, year, mileage, price, availability, description, brandname, gastypename, id, photos}) {
+    constructor({standid, brandid, gastypeid, model, year, mileage, price, availability, description, brandname, gastypename, id, photos, consume}) {
         this.standid = standid;
         this.brandid = brandid;
         this.gastypeid = gastypeid;
@@ -14,6 +14,7 @@ class Vehicle {
         this.gastypename = gastypename;
         this.id = id;
         this.photos = photos || []
+        this.consume = consume
     }
 
     toJson() {
@@ -33,7 +34,7 @@ class Vehicle {
     }
 
     static create(vehicleDto) {
-        if(!vehicleDto.standid || !vehicleDto.brandid || !vehicleDto.gastypeid || !vehicleDto.model || !vehicleDto.year || !vehicleDto.mileage || !vehicleDto.price || !vehicleDto.availability || !vehicleDto.description) {
+        if(!vehicleDto.standid || !vehicleDto.brandid || !vehicleDto.gastypeid || !vehicleDto.model || !vehicleDto.year || !vehicleDto.mileage || !vehicleDto.price || !vehicleDto.availability || !vehicleDto.description || !vehicleDto.consume) {
             throw new Error('Invalid vehicle data');
         }
         

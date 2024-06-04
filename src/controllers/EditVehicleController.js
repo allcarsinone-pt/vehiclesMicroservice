@@ -12,14 +12,14 @@ class EditVehicleController {
     }
 
     async execute(request, response) {
-        let { vehicleid, standid, brandid, gastypeid, model, year, mileage, price, availability, description } = request.body  || {}
-        if(!vehicleid || !standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !availability || !description) {
+        let { vehicleid, standid, brandid, gastypeid, model, year, mileage, price, availability, description, consume } = request.body  || {}
+        if(!vehicleid || !standid || !brandid || !gastypeid || !model || !year || !mileage || !price || !availability || !description || !consume) {
             await this.logService.execute({from: 'VehiclesService', data: 'Missing fields', date: new Date(), status: 'error'}, this.logService)
-            return response.status(400).json({ error: 'All fields are required. It should have vehicleid, standid, brandid, gastypeid, model, year, mileage, price, availability, description' })
+            return response.status(400).json({ error: 'All fields are required. It should have vehicleid, standid, brandid, gastypeid, model, year, mileage, price, availability, description, consume' })
         }
 
         const usecase = new EditVehicleUseCase(this.vehicleRepository)
-        const vehicle = await usecase.execute({vehicleid, standid, brandid, gastypeid, model, year, mileage, price, availability, description})
+        const vehicle = await usecase.execute({vehicleid, standid, brandid, gastypeid, model, year, mileage, price, availability, description, consume})
 
         if(vehicle.error) {
             await this.logService.execute({from: 'VehiclesService', data: vehicle.error.message, date: new Date(), status: 'error'}, this.logService)
