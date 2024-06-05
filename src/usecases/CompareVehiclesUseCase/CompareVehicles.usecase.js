@@ -79,7 +79,8 @@ class CompareVehiclesUseCase {
             let averagePrice2  = 0
 
             if(vehicle1.gastypename === "Gasoline") {
-                averagePrice1 = vehicle1.consume * fuelPrices[3].preco 
+                console.log(fuelPrices[2].preco)
+                averagePrice1 = vehicle1.consume * fuelPrices[2].preco 
             
             }
             else if(vehicle1.gastypename === "Diesel") {
@@ -87,12 +88,14 @@ class CompareVehiclesUseCase {
             }
 
             if(vehicle2.gastypename === "Gasoline") {
-                averagePrice2 = vehicle1.consume * fuelPrices[3].preco 
+                console.log(fuelPrices[2].preco)
+                averagePrice2 = vehicle2.consume * fuelPrices[2].preco 
             }
             else if(vehicle2.gastypename === "Diesel") {
-                averagePrice2 = vehicle1.consume * fuelPrices[0].preco
+                averagePrice2 = vehicle2.consume * fuelPrices[0].preco
             }
 
+            console.log({averagePrice1, averagePrice2})
             response.best_details.consume = averagePrice1 < averagePrice2? vehicle1.id : vehicle2.id
         }
 

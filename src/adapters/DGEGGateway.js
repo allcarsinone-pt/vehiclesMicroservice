@@ -8,7 +8,7 @@ class DGEGGateway {
     }
 
     async execute() {
-        const response = await axios.get(`${this.baseURI}/api/PrecoComb/GetDadosPostoMapa?id=65949&f=json`, log)
+        const response = await axios.get(`${this.baseURI}/api/PrecoComb/GetDadosPostoMapa?id=65949&f=json`)
         if(response.status !== 200) {
             throw new Error('Error on DGEGGateway')
         }
@@ -17,7 +17,7 @@ class DGEGGateway {
 
         const combustiveis = response.data.resultado.Combustiveis
         for(let combustivel of combustiveis) {
-            combustivel.preco = combustivel.preco.replace(' €/litro', '')
+            combustivel.preco = combustivel.Preco.replace(' €/litro', '')
             combustivel.preco = combustivel.preco.replace(',','.')
             combustivel.preco = parseFloat(combustivel.preco)
         }
