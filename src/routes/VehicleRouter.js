@@ -33,7 +33,7 @@ vehicleRouter.get('/', async (req, res) => {
     controller.execute(req, res)
 })
 
-vehicleRouter.put('/edit', async (req, res) => {
+vehicleRouter.put('/:vehicleid', async (req, res) => {
     const controller = req.app.get('EditVehicleController')
     controller.execute(req, res)
 })
