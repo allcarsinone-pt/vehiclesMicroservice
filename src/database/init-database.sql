@@ -8,6 +8,8 @@ CREATE TABLE brands (
     name VARCHAR(100)
 );
 
+
+
 CREATE TABLE vehicles (
     id SERIAL PRIMARY KEY,
     standid INTEGER,
@@ -21,6 +23,14 @@ CREATE TABLE vehicles (
     gastypeid INTEGER,
     brandid INTEGER,
     deleted BOOLEAN DEFAULT false
+);
+
+CREATE TABLE favorites(
+    userid INTEGER,
+    vehicleid INTEGER REFERENCES vehicles(id),
+    PRIMARY KEY (userid, vehicleid)
+
+    
 );
 
 CREATE TABLE photos (
