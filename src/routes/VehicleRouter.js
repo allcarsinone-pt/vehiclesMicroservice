@@ -65,12 +65,18 @@ vehicleRouter.get('/user/favorites/:userid', async (req, res) => {
 
         let finalResult = []
 
-        for (let vehicle of result.rows) {
+        for(let vehicle of result.rows) {
             let photos = await pool.query(`SELECT url FROM photos WHERE vehicleid = $1 LIMIT 1`, [vehicle.vehicleid])
-            vehicle.thumbnail = photos.rows[0].url.replace('src/static', '')
+    
+            if(photos.rows.length !== 0) { 
+                vehicle.thumbnail = photos.rows[0].url.replace('src/static', '')
+            }
+            else
+            {
+                vehicle.thumbnail = ""
+            }
             finalResult.push(vehicle)
         }
-
 
         await pool.end()
         return res.status(200).json(finalResult)
