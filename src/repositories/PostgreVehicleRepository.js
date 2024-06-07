@@ -9,8 +9,8 @@ class PostgreVehicleRepository {
   async create(vehicle) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    const result = await client.query(`INSERT INTO vehicles (standid, brandid, gastypeid, model, year, mileage, price, availability, description, consume) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-      [vehicle.standid, vehicle.brandid, vehicle.gastypeid, vehicle.model, vehicle.year, vehicle.mileage, vehicle.price, vehicle.availability, vehicle.description, vehicle.consume])
+    const result = await client.query(`INSERT INTO vehicles (standid, brandid, gastypeid, model, year, mileage, price, availability, description, consume, location) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+      [vehicle.standid, vehicle.brandid, vehicle.gastypeid, vehicle.model, vehicle.year, vehicle.mileage, vehicle.price, vehicle.availability, vehicle.description, vehicle.consume, vehicle.location])
     let n = 0
     if (vehicle.photos.length > 0) {
       const photos = vehicle.photos
@@ -42,8 +42,8 @@ class PostgreVehicleRepository {
   async editVehicle(vehicle) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    const result = await client.query(`UPDATE vehicles SET standid = COALESCE($1, standid), brandid = COALESCE($2, brandid), gastypeid = COALESCE($3, gastypeid), model = COALESCE($4, model), year = COALESCE($5, year), mileage = COALESCE($6, mileage), price = COALESCE($7, price), availability = COALESCE($8, availability), description = COALESCE($9, description), consume = COALESCE($10, consume) WHERE id = $11 RETURNING *`,
-      [vehicle.standid, vehicle.brandid, vehicle.gastypeid, vehicle.model, vehicle.year, vehicle.mileage, vehicle.price, vehicle.availability, vehicle.description, vehicle.consume ,vehicle.id])
+    const result = await client.query(`UPDATE vehicles SET standid = COALESCE($1, standid), brandid = COALESCE($2, brandid), gastypeid = COALESCE($3, gastypeid), model = COALESCE($4, model), year = COALESCE($5, year), mileage = COALESCE($6, mileage), price = COALESCE($7, price), availability = COALESCE($8, availability), description = COALESCE($9, description), consume = COALESCE($10, consume), location = COALESCE($11, location) WHERE id = $12 RETURNING *`,
+      [vehicle.standid, vehicle.brandid, vehicle.gastypeid, vehicle.model, vehicle.year, vehicle.mileage, vehicle.price, vehicle.availability, vehicle.description, vehicle.consume, vehicle.location, vehicle.id])
     await client.end()
     return new Vehicle(result.rows[0])
   }
@@ -61,8 +61,8 @@ class PostgreVehicleRepository {
     const result = await client.query(`SELECT * FROM vehicles 
                                       INNER JOIN brands ON vehicles.brandid = brands.id
                                       INNER JOIN gastypes ON vehicles.gastypeid = gastypes.id
-                                      INNER JOIN photos ON vehicles.id = photos.vehicleid
-                                      WHERE id = $1`, [id])
+                                      LEFT JOIN photos ON vehicles.id = photos.vehicleid
+                                      WHERE vehicles.id = $1`, [id])
     await client.end()
     if (result.rows.length === 0) {
       return undefined
@@ -123,7 +123,7 @@ class PostgreVehicleRepository {
   async getVehicles() {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, br.name as brandname, gp.name as gastypename FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid
+    const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, vh.location, br.name as brandname, gp.name as gastypename FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid
     WHERE availability = true AND deleted = false`)
     await client.end()
 
@@ -154,7 +154,7 @@ class PostgreVehicleRepository {
   async getVehiclesFilter2(vehicle) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
-    const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, br.name as brandname, gp.name as gastypename FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid`)
+    const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, vh.location, br.name as brandname, gp.name as gastypename FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid`)
     await client.end()
 
     if (result.rows.length === 0) {

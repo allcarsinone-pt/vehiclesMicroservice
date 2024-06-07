@@ -1,6 +1,6 @@
 class Vehicle {
 
-    constructor({standid, brandid, gastypeid, model, year, mileage, price, availability, description, brandname, gastypename, id, photos, consume}) {
+    constructor({ standid, brandid, gastypeid, model, year, mileage, price, availability, description, brandname, gastypename, id, photos, consume, location }) {
         this.standid = standid;
         this.brandid = brandid;
         this.gastypeid = gastypeid;
@@ -15,6 +15,7 @@ class Vehicle {
         this.id = id;
         this.photos = photos || []
         this.consume = consume
+        this.location = location
     }
 
     toJson() {
@@ -31,13 +32,14 @@ class Vehicle {
         this.price = vehicleDto.price ? vehicleDto.price : this.price;
         this.availability = vehicleDto.availability ? vehicleDto.availability : this.availability;
         this.description = vehicleDto.description ? vehicleDto.description : this.description;
+        this.location = vehicleDto.location ? vehicleDto.location : this.location
     }
 
     static create(vehicleDto) {
-        if(!vehicleDto.standid || !vehicleDto.brandid || !vehicleDto.gastypeid || !vehicleDto.model || !vehicleDto.year || !vehicleDto.mileage || !vehicleDto.price || !vehicleDto.availability || !vehicleDto.description || !vehicleDto.consume) {
+        if (!vehicleDto.standid || !vehicleDto.brandid || !vehicleDto.gastypeid || !vehicleDto.model || !vehicleDto.year || !vehicleDto.mileage || !vehicleDto.price || !vehicleDto.availability || !vehicleDto.description || !vehicleDto.consume || !vehicleDto.location) {
             throw new Error('Invalid vehicle data');
         }
-        
+
         return new Vehicle(vehicleDto);
     }
 }

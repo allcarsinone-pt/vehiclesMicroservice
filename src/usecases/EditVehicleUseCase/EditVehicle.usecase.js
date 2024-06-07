@@ -6,14 +6,14 @@ class EditVehicleUseCase {
      * @description Constructor of EditVehicleUseCase
      * @param {*} vehicleRepository a vehicleRepository
      */
-    constructor (vehicleRepository) {
+    constructor(vehicleRepository) {
         this.vehicleRepository = vehicleRepository
     }
 
     async execute(editVehicleDto) {
         const withErrorHandling = handleError(async () => {
             const vehicleExists = await this.vehicleRepository.findByID(editVehicleDto.vehicleid)
-            if(!vehicleExists) {
+            if (!vehicleExists) {
                 return Result.failed(new Error('Vehicle doesnt exists'))
             }
             vehicleExists.editVehicle(editVehicleDto)

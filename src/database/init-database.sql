@@ -22,7 +22,8 @@ CREATE TABLE vehicles (
     description VARCHAR(250),
     gastypeid INTEGER,
     brandid INTEGER,
-    deleted BOOLEAN DEFAULT false
+    deleted BOOLEAN DEFAULT false,
+    location VARCHAR(100)
 );
 
 CREATE TABLE favorites(
