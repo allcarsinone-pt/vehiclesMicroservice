@@ -43,6 +43,33 @@ vehicleRouter.delete('/:vehicleid', async (req, res) => {
     controller.execute(req, res)
 })
 
+
+vehicleRouter.get('/user/favorites/:userid', async(req, res) => {
+
+    try {
+    const { userid } = req.params
+
+    if(!userid) {
+        return res.status(400).json({ error: 'All fields are required. It should have userid' })
+    }
+
+    const query = `SELECT vehicles.id as vehicleid , brands.name || ' ' || model as carname, vehicles.price FROM vehicles INNER JOIN brands ON vehicles.brandid = brands.id INNER JOIN favorites ON vehicles.id = favorites.vehicleid WHERE favorites.userid = $1 AND vehicles.availability = true AND vehicles.deleted = false`
+
+    const values = [userid]
+
+    const pool = new pg.Client(process.env.DATABASE_URL)
+    
+    await pool.connect()
+
+    const result = await pool.query(query, values)
+
+    await pool.end()
+
+    return res.status(200).json(result.rows)
+} catch (error) {
+    return res.status(500).json({ error: error.message })
+}
+})
 vehicleRouter.post("/user/favorites", async(req, res) => {
     try {
     const { userid, vehicleid } = req.body
