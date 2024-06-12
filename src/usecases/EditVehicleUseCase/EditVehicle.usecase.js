@@ -16,8 +16,7 @@ class EditVehicleUseCase {
             if (!vehicleExists) {
                 return Result.failed(new Error('Vehicle doesnt exists'))
             }
-            vehicleExists.editVehicle(editVehicleDto)
-            let vehicle = await this.vehicleRepository.editVehicle(vehicleExists)
+            let vehicle = await this.vehicleRepository.editVehicle(editVehicleDto)
             return Result.success(vehicle.toJson())
         })
         return withErrorHandling()

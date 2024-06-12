@@ -43,7 +43,7 @@ class PostgreVehicleRepository {
     const client = new pg.Client(this.baseURI)
     await client.connect()
     const result = await client.query(`UPDATE vehicles SET standid = COALESCE($1, standid), brandid = COALESCE($2, brandid), gastypeid = COALESCE($3, gastypeid), model = COALESCE($4, model), year = COALESCE($5, year), mileage = COALESCE($6, mileage), price = COALESCE($7, price), availability = COALESCE($8, availability), description = COALESCE($9, description), consume = COALESCE($10, consume), location = COALESCE($11, location) WHERE id = $12 RETURNING *`,
-      [vehicle.standid, vehicle.brandid, vehicle.gastypeid, vehicle.model, vehicle.year, vehicle.mileage, vehicle.price, vehicle.availability, vehicle.description, vehicle.consume, vehicle.location, vehicle.id])
+      [vehicle.standid, vehicle.brandid, vehicle.gastypeid, vehicle.model, vehicle.year, vehicle.mileage, vehicle.price, vehicle.availability, vehicle.description, vehicle.consume, vehicle.location, vehicle.vehicleid])
     await client.end()
     return new Vehicle(result.rows[0])
   }
