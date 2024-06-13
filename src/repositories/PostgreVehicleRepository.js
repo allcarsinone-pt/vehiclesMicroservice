@@ -74,10 +74,10 @@ class PostgreVehicleRepository {
     const client = new pg.Client(this.baseURI)
     await client.connect()
     const result = await client.query(`SELECT 
-  (SELECT SUM(price) FROM "vehicles" WHERE availability=FALSE) as "VehiclesSales", 
-  (SELECT COUNT(*) FROM "vehicles" where availability=TRUE) as "VehiclesAvailable", 
-  (SELECT COUNT(*) FROM "vehicles" where availability=FALSE) as "VehiclesSold", 
-  (SELECT brands.name FROM "vehicles" INNER JOIN "brands" ON vehicles.brandid = brands.id GROUP BY brands.name) as "BestBrand"
+  (SELECT SUM(price) FROM "vehicles" WHERE availability=FALSE LIMIT 1) as "VehiclesSales", 
+  (SELECT COUNT(*) FROM "vehicles" where availability=TRUE LIMIT 1) as "VehiclesAvailable", 
+  (SELECT COUNT(*) FROM "vehicles" where availability=FALSE LIMIT 1) as "VehiclesSold", 
+  (SELECT brands.name FROM "vehicles" INNER JOIN "brands" ON vehicles.brandid = brands.id GROUP BY brands.name LIMIT 1) as "BestBrand"
 FROM "vehicles" WHERE standid=$1 LIMIT 1`, [standid])
     await client.end()
     if (result.rows.length === 0) {
