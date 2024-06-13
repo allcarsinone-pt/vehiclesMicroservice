@@ -70,6 +70,22 @@ class PostgreVehicleRepository {
     return new Vehicle(result.rows[0])
   }
 
+  async getStandDetails(standid) {
+    const client = new pg.Client(this.baseURI)
+    await client.connect()
+    const result = await client.query(`SELECT 
+  (SELECT SUM(price) FROM "vehicles" WHERE availability=FALSE) as "VehiclesSales", 
+  (SELECT COUNT(*) FROM "vehicles" where availability=TRUE) as "VehiclesAvailable", 
+  (SELECT COUNT(*) FROM "vehicles" where availability=FALSE) as "VehiclesSold", 
+  (SELECT brands.name FROM "vehicles" INNER JOIN "brands" ON vehicles.brandid = brands.id GROUP BY brands.name) as "BestBrand"
+FROM "vehicles" WHERE standid=$1 LIMIT 1`, [standid])
+    await client.end()
+    if (result.rows.length === 0) {
+      return undefined
+    }
+    return result.rows[0]
+  }
+
   async deleteByStand(standid) {
     const client = new pg.Client(this.baseURI)
     await client.connect()

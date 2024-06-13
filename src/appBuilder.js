@@ -26,8 +26,9 @@ const multerMiddleware = require('../config/multer-config');
 const path = require('path');
 const CompareVehiclesController = require('./controllers/CompareVehiclesController');
 const DGEGGateway = require('./adapters/DGEGGateway');
-function makeApp({vehicleRepository, gasTypeRepository, brandRepository ,logAdapter ,
-    authService, standService , rabbitMQAdapter, testDriveRepository, fuelService}) {
+const StandStatisticsController = require('./controllers/StandStatisticsController');
+function makeApp({ vehicleRepository, gasTypeRepository, brandRepository, logAdapter,
+    authService, standService, rabbitMQAdapter, testDriveRepository, fuelService }) {
     const app = express();
     app.use(cors());
     app.use(express.json());
@@ -46,13 +47,13 @@ function makeApp({vehicleRepository, gasTypeRepository, brandRepository ,logAdap
     app.set('GetVehicleDetailsController', new GetVehicleDetailsController(vehicleRepository, logAdapter));
     app.set('FilterVehiclesController', new FilterVehiclesController(vehicleRepository, logAdapter));
     app.set('CompareVehiclesController', new CompareVehiclesController(vehicleRepository, fuelService));
-
+    app.set('StandStatisticsController', new StandStatisticsController(vehicleRepository));
     app.set('RabbitMQAdapter', rabbitMQAdapter)
     app.set('multerMiddleware', multerMiddleware)
     app.set('LogAdapter', logAdapter) // Log adapter: ex: rabbitmq
     app.set('AuthAdapter', authService)
-    app.set('StandService', standService)    
-    app.use('/vehicles',vehicleRouter);
+    app.set('StandService', standService)
+    app.use('/vehicles', vehicleRouter);
     app.use('/testdrives', TestDrivesRouter);
     app.use('/brands', brandRouter);
     app.use('/gastypes', gasTypeRouter);

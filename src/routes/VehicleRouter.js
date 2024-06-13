@@ -43,7 +43,10 @@ vehicleRouter.delete('/:vehicleid', async (req, res) => {
     controller.execute(req, res)
 })
 
-
+vehicleRouter.get('/a/stats/:standid', async (req, res) => {
+    const controller = req.app.get('StandStatisticsController')
+    controller.execute(req, res)
+})
 vehicleRouter.get('/user/favorites/:userid', async (req, res) => {
 
     try {
@@ -65,14 +68,13 @@ vehicleRouter.get('/user/favorites/:userid', async (req, res) => {
 
         let finalResult = []
 
-        for(let vehicle of result.rows) {
+        for (let vehicle of result.rows) {
             let photos = await pool.query(`SELECT url FROM photos WHERE vehicleid = $1 LIMIT 1`, [vehicle.vehicleid])
-    
-            if(photos.rows.length !== 0) { 
+
+            if (photos.rows.length !== 0) {
                 vehicle.thumbnail = photos.rows[0].url.replace('src/static', '')
             }
-            else
-            {
+            else {
                 vehicle.thumbnail = ""
             }
             finalResult.push(vehicle)
