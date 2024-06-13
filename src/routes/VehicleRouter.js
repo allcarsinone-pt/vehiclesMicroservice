@@ -43,7 +43,7 @@ vehicleRouter.delete('/:vehicleid', async (req, res) => {
     controller.execute(req, res)
 })
 
-vehicleRouter.get('/a/stats/:standid', async (req, res) => {
+vehicleRouter.get('/stands/stats/:standid', async (req, res) => {
     const controller = req.app.get('StandStatisticsController')
     controller.execute(req, res)
 })
