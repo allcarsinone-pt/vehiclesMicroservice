@@ -17,6 +17,11 @@ vehicleRouter.post('/', async (req, res) => {
     controller.execute(req, res)
 })
 
+vehicleRouter.get('/pagination/:page', async (req, res) => {
+    const controller = req.app.get('GetVehiclesPaginationController')
+    controller.execute(req, res)
+})
+
 vehicleRouter.get('/:vehicleid1/:vehicleid2', async (req, res) => {
     const controller = req.app.get('CompareVehiclesController')
     controller.execute(req, res)

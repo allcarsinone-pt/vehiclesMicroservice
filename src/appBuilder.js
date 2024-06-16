@@ -27,6 +27,7 @@ const path = require('path');
 const CompareVehiclesController = require('./controllers/CompareVehiclesController');
 const DGEGGateway = require('./adapters/DGEGGateway');
 const StandStatisticsController = require('./controllers/StandStatisticsController');
+const GetVehiclesPaginationController = require('./controllers/GetVehiclesPaginationController');
 function makeApp({ vehicleRepository, gasTypeRepository, brandRepository, logAdapter,
     authService, standService, rabbitMQAdapter, testDriveRepository, fuelService }) {
     const app = express();
@@ -48,6 +49,7 @@ function makeApp({ vehicleRepository, gasTypeRepository, brandRepository, logAda
     app.set('FilterVehiclesController', new FilterVehiclesController(vehicleRepository, logAdapter));
     app.set('CompareVehiclesController', new CompareVehiclesController(vehicleRepository, fuelService));
     app.set('StandStatisticsController', new StandStatisticsController(vehicleRepository));
+    app.set('GetVehiclesPaginationController', new GetVehiclesPaginationController(vehicleRepository, logAdapter));
     app.set('RabbitMQAdapter', rabbitMQAdapter)
     app.set('multerMiddleware', multerMiddleware)
     app.set('LogAdapter', logAdapter) // Log adapter: ex: rabbitmq

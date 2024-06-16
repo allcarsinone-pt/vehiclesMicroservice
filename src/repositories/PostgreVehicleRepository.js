@@ -151,6 +151,22 @@ FROM "vehicles" WHERE standid=$1 LIMIT 1`, [standid])
 
   }
 
+  async getVehiclesPaginated(page) {
+    page = parseInt(page)
+    const client = new pg.Client(this.baseURI)
+    await client.connect()
+    const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, vh.location, br.name as brandname, gp.name as gastypename FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid
+    WHERE availability = true AND deleted = false LIMIT $1 OFFSET $2`, [10, (page - 1) * 10])
+    await client.end()
+
+    if (result.rows.length === 0) {
+      return undefined
+    }
+
+    return result.rows
+
+  }
+
   async getVehicleDetails(vehicleid) {
     const client = new pg.Client(this.baseURI)
     await client.connect()
