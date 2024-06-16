@@ -1,14 +1,28 @@
 const { configDotenv, config } = require('dotenv')
 const Vehicle = require('./src/entities/Vehicle')
 const Brand = require('./src/entities/Brand')
+const GasType = require('./src/entities/GasType')
 const PostgreVehicleRepository = require('./src/repositories/PostgreVehicleRepository')
 const PostgreBrandRepository = require('./src/repositories/PostgreBrandRepository')
+const PostgreGasTypeRepository = require('./src/repositories/PostgreGasTypeRepository')
 
 config()
 
 const main = async () => {
     const vehicles = []
     const brands = []
+    const gastypes = []
+
+    for (let i = 0; i < 20; i++) {
+        const gastype = new GasType(`Gas Type ${i}`)
+        gastypes.push(gastype)
+    }
+
+    const gastypeRepository = new PostgreGasTypeRepository(process.env.DATABASE_URL)
+
+    for (let i = 0; i < gastypes.length; i++) {
+        await gastypeRepository.create(gastypes[i])
+    }
 
     for (let i = 0; i < 100; i++) {
         const brand = new Brand(`Brand ${i}`)
