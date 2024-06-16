@@ -8,7 +8,7 @@ const PostgreGasTypeRepository = require('./src/repositories/PostgreGasTypeRepos
 
 config()
 
-const main = async () => {
+async function vehicleSeed(BASE_URL) {
     const vehicles = []
     const brands = []
     const gastypes = []
@@ -18,7 +18,7 @@ const main = async () => {
         gastypes.push(gastype)
     }
 
-    const gastypeRepository = new PostgreGasTypeRepository(process.env.DATABASE_URL)
+    const gastypeRepository = new PostgreGasTypeRepository(BASE_URL)
 
     for (let i = 0; i < gastypes.length; i++) {
         await gastypeRepository.create(gastypes[i])
@@ -28,7 +28,7 @@ const main = async () => {
         const brand = new Brand(`Brand ${i}`)
         brands.push(brand)
     }
-    const brandRepository = new PostgreBrandRepository(process.env.DATABASE_URL)
+    const brandRepository = new PostgreBrandRepository(BASE_URL)
 
     for (let i = 0; i < brands.length; i++) {
         await brandRepository.create(brands[i])
@@ -57,7 +57,7 @@ const main = async () => {
     }
 
 
-    const vehicleRepository = new PostgreVehicleRepository(process.env.DATABASE_URL)
+    const vehicleRepository = new PostgreVehicleRepository(BASE_URL)
 
     for (let i = 0; i < vehicles.length; i++) {
         await vehicleRepository.create(vehicles[i])
@@ -65,4 +65,4 @@ const main = async () => {
 
 }
 
-main()
+module.exports = vehicleSeed
