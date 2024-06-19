@@ -141,7 +141,7 @@ FROM "vehicles" WHERE standid=$1 LIMIT 1`, [standid])
     await client.connect()
     const result = await client.query(`SELECT vh.id, vh.model, vh.year, vh.mileage, vh.price, vh.availability, vh.description, vh.location, br.name as brandname, gp.name as gastypename, vh.standid as "standid", vh.brandid as "brandid", vh.gastypeid as "gastypeid" FROM vehicles vh INNER JOIN brands br ON br.id = vh.brandid INNER JOIN gastypes gp ON gp.id = vh.gastypeid
     WHERE availability = true AND deleted = false`)
-    await client.end()
+   
 
     if (result.rows.length === 0) {
       return undefined
@@ -150,7 +150,7 @@ FROM "vehicles" WHERE standid=$1 LIMIT 1`, [standid])
       const resultPhotos = await client.query(`SELECT url FROM photos WHERE vehicleid = $1`, [result.rows[i].id])
       result.rows[i].photos = resultPhotos.rows || []
     }
-
+    await client.end()
     return result.rows
 
   }
