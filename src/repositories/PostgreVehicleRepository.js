@@ -146,6 +146,10 @@ FROM "vehicles" WHERE standid=$1 LIMIT 1`, [standid])
     if (result.rows.length === 0) {
       return undefined
     }
+    for(let i = 0; i < result.rows.length; i++) {
+      const resultPhotos = await client.query(`SELECT url FROM photos WHERE vehicleid = $1`, [result.rows[i].id])
+      result.rows[i].photos = resultPhotos.rows || []
+    }
 
     return result.rows
 
